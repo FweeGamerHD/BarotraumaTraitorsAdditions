@@ -31,6 +31,8 @@ Hook.Patch("Barotrauma.CharacterInfo", "ApplySkillGain", function(instance, ptab
     -- Add experience to the player character
     local experienceGain = ptable["baseGain"].Value * 0.1
 
+    experienceGain = experienceGain * JOBMULTIPLIER(instance, ptable["skillIdentifier"].Value)
+
     -- Get the player's DECIMALCOUNTER
     local decimalCounter = getDecimalCounter(instance)
     
@@ -60,4 +62,64 @@ function DECIMALCHECK(decimalCounter)
         return true
     end
     return false
+end
+
+function SWITCH(value)
+	return function(cases)
+		
+		setmetatable(cases, cases)
+		
+		local f = cases[value]
+		if f then
+			f()
+		end
+	end
+end
+
+function JOBMULTIPLIER(character, skillIdentifier)
+    local jobMultipliers = {}
+    jobMultipliers["captain"] = {
+        ["helm"] = 2.5,
+        ["weapons"] = 1,
+        ["medical"] = 1,
+        ["electrical"] = 1,
+        ["mechanical"] = 1
+    }
+    jobMultipliers["securityofficer"] = {
+        ["helm"] = 1,
+        ["weapons"] = 2.5,
+        ["medical"] = 1,
+        ["electrical"] = 1,
+        ["mechanical"] = 1
+    }
+    jobMultipliers["medicaldoctor"] = {
+        ["helm"] = 1,
+        ["weapons"] = 1,
+        ["medical"] = 2.5,
+        ["electrical"] = 1,
+        ["mechanical"] = 1
+    }
+    jobMultipliers["engineer"] = {
+        ["helm"] = 1,
+        ["weapons"] = 1,
+        ["medical"] = 1,
+        ["electrical"] = 2.5,
+        ["mechanical"] = 1
+    }
+    jobMultipliers["mechanic"] = {
+        ["helm"] = 1,
+        ["weapons"] = 1,
+        ["medical"] = 1,
+        ["electrical"] = 1,
+        ["mechanical"] = 2.5
+    }
+    jobMultipliers["assistant"] = {
+        ["helm"] = 2,
+        ["weapons"] = 2,
+        ["medical"] = 2,
+        ["electrical"] = 2,
+        ["mechanical"] = 2
+    }
+
+    return jobMultipliers[character.Job.Prefab.Identifier.Value][skillIdentifier]
 end

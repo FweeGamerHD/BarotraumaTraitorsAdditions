@@ -64,18 +64,7 @@ function DECIMALCHECK(decimalCounter)
     return false
 end
 
-function SWITCH(value)
-	return function(cases)
-		
-		setmetatable(cases, cases)
-		
-		local f = cases[value]
-		if f then
-			f()
-		end
-	end
-end
-
+-- Function to check and handle the multiplier for a job
 function JOBMULTIPLIER(character, skillIdentifier)
     local jobMultipliers = {}
     jobMultipliers["captain"] = {
